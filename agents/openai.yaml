@@ -1,5 +1,6 @@
 interface:
   display_name: "codex-duet-github"
   short_description: "显式选择 ChatGPT 规划、讨论或评审，由 Codex 实施并通过 GitHub 插件发布"
+  default_prompt: "使用 $codex-duet-github 完成这个 GitHub 项目任务；开始前确认 ChatGPT 参与 Plan、Discussion、Review 中的哪些角色。"
 policy:
   allow_implicit_invocation: false
