@@ -10,9 +10,11 @@
 
 当前版本面向 Windows 和 macOS 的 ChatGPT 桌面应用中的 Codex。这里描述的是目标支持范围，不是已经实测的平台认证。
 
-本次 Codex 会话须同时具备本地完整项目访问、Browser Use 或 Codex Chrome 扩展，以及可写 GitHub 工具连接。Codex CLI、IDE 扩展或没有浏览器通道的环境不属于本版本的完整支持范围。
+本次 Codex 会话须同时具备本地完整项目访问、ChatGPT 内置 Browser 或已连接的 ChatGPT 浏览器扩展，以及可写 GitHub 工具连接。Codex CLI、IDE 扩展或没有浏览器通道的环境不属于本版本的完整支持范围。
 
 浏览器能力以当前会话、套餐和工作区策略为准；内置浏览器与 Chrome 使用不同的浏览器状态，只检查选定通道。参见 [官方浏览器说明](https://learn.chatgpt.com/docs/browser?surface=app)。
+
+[ChatGPT 浏览器扩展](https://learn.chatgpt.com/docs/chrome-extension) 可连接 Chrome、Edge、Brave、Opera 和 Vivaldi，实际可用性以当前会话为准。
 
 ## 文件与规范
 
@@ -36,7 +38,16 @@ codex-duet-github/
 - 个人使用：`~/.agents/skills/codex-duet-github/`，Windows 对应用户目录下的 `.agents\skills\codex-duet-github\`。
 - 指定仓库使用：`<目标仓库>/.agents/skills/codex-duet-github/`。
 
-安装后直接存在 `codex-duet-github/SKILL.md`、`codex-duet-github/agents/openai.yaml` 和 `codex-duet-github/LICENSE`。也可请 `$skill-installer` 从本仓库根目录安装，并指定名称 `codex-duet-github`。
+安装后直接存在 `codex-duet-github/SKILL.md`、`codex-duet-github/agents/openai.yaml` 和 `codex-duet-github/LICENSE`。也可向安装器提供：
+
+```text
+使用 $skill-installer 安装以下 Skill：
+Repository: Jickfu/codex-duet-github
+Path: .
+Name: codex-duet-github
+```
+
+手动安装使用上述公开文档推荐的 `.agents/skills` 位置；使用 `$skill-installer` 时，由当前 Codex 版本的安装器选择其支持的目录。当前安装器默认使用 `$CODEX_HOME/skills`（通常为 `~/.codex/skills`），不保证与手动目录相同。安装后在下一轮通过 Skill 选择器、`/skills` 或 `$codex-duet-github` 验证是否已发现。
 
 可从已经发布的任务分支或合并后的默认分支下载文件；未合并时不要假设默认分支已有完整 Skill。若同名安装已经存在，先检查内容，再决定更新，不直接覆盖。安装副本的后续更新需要同步复制。
 
@@ -46,6 +57,7 @@ Codex 会自动发现变化；若没有显示，重启 Codex。在 Skill 选择�
 
 - Codex 已连接当前环境提供的 GitHub 插件，账户有目标仓库读写权限。
 - 插件能读取默认分支/完整 SHA、创建分支、发布 Commit 并读取验证结果；“连接成功”不保证具备所有写能力。
+- 账户身份接口不是硬性要求；不提供时以目标仓库、分支、SHA、权限及后续分支创建验证连接，不把仓库 owner 当作连接账户。
 - 本地完整目标项目可读取、可写入，所需构建/测试工具可执行。
 - Codex 有可用的 Browser / Computer Use 通道，本次选定浏览器已登录网页版 ChatGPT。
 - 本次实际使用的 ChatGPT 对话界面能够调用 GitHub，并获得目标仓库和指定 Commit 的读取权限。这与 Codex 的 GitHub 连接是两项独立检查；ChatGPT 能读取仓库不证明 Codex 连接具有写能力。
@@ -87,7 +99,11 @@ Review 检查 `BASE_SHA..最新 REVIEW_SHA` 的累计修改。只选 Review 不�
 
 远程任务分支不代表本地目录已切换分支。首次修改每个文件前，核对本地内容与 `BASE_SHA`，维护新增、修改、删除清单；已有差异未经同意不覆盖、不发布。发布只包含清单内变更。触及文件校验不保证整个测试环境一致：存在影响测试的本地差异或无法确认等价性时，只报告本地工作区验证，不宣称最终 Commit 已获得精确测试。
 
-ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的内容校验；正式 Review 分别确认基准、评审 Commit 和累计差异可读。仅回显 SHA 或命中多个版本共有的内容不能独立证明精确读取。
+启动时先用远端根目录清单和 1 至 3 个项目标识文件核对本地项目身份，无法确认时请用户确认路径。身份检查不要求整个工作区等于基准。文本比较区分业务修改与 LF/CRLF、UTF-8 BOM 表示差异，发布时避免无意的整文件转换。
+
+优先多文件单 Commit；插件仅支持逐文件写入时，允许连续 Commit（删除也可单独提交）。每次写入前后核对分支及 Commit，全部变更发布完成才以最终 SHA 请求 Review；中途失败报告已发布 SHA、当前分支及剩余文件，不宣称阶段完成。
+
+ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的内容校验。启用 Review 且有合适历史范围时，追加已知小范围读取检查；否则分别报告单 Commit 读取状态和“累计差异读取：待首次正式 Review 验证”。正式 Review 要求实际变更路径、关键实现事实、精确版本及读取限制，并由 Codex 对照插件结果核实；仅回显 SHA 不算证据。“未发现需要修改的问题”是合法结论。
 
 ## 首版验证
 
@@ -105,6 +121,12 @@ ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的�
 | 只选 Discussion | 实际讨论关键方案，Codex 实施验证发布，不自动启动 Plan/Review |
 | 仅介绍或编辑本 Skill | 不启动它所描述的协作流程 |
 | Review 后修复产生新 Commit | 重新测试、发布、读取验证 SHA，再评审累计范围 |
+| 仅有逐文件写操作，第二次写入失败 | 保留并报告首个已验证 SHA、当前分支与剩余文件，不启动 Review |
+| 本地目录属于另一项目 | 项目标识核对失败，在规划/讨论前暂停并请用户确认路径 |
+| 文本仅有 CRLF 或 UTF-8 BOM 差异 | 标为表示差异，发布前检查没有无意转换 |
+| 没有账户身份接口 / 没有合适历史范围 | 分别报告身份不可用 / 累计读取待验证，不等同于连接失败 |
+| Review 仅回显 SHA 或只读部分文件 | 不接受为完整范围通过，要求补足可核对的事实证据 |
+| Reviewer 未发现预置缺陷 | 发现能力不记通过，不要求虚构其他问题 |
 
 安装到实际环境后，真实浏览器登录、消息发送、ChatGPT 的 GitHub 读取和插件写入仍需在启动/发布时验证。最终交付报告须区分结构校验、人工推演和真实执行结果。
 
@@ -112,14 +134,18 @@ ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的�
 
 在用户授权的测试仓库中完成并记录证据，不能用桌面推演勾选：
 
-- [ ] Codex 通过 GitHub 插件读取账户、目标仓库、默认分支和完整 `BASE_SHA`。
+- [ ] Codex 通过插件读取目标仓库、权限、默认分支和完整 `BASE_SHA`；账户身份可用时报告，不可用时如实注明。
+- [ ] 通过根目录及项目标识文件核对本地目录身份，完成所选角色对应的单 Commit / 累计范围启动检查并分别报告状态。
 - [ ] 从确切 `BASE_SHA` 创建任务分支，并重新读取验证分支 SHA。
 - [ ] 校验触及文件，修改一个文档文件并运行本地检查，注明测试范围。
-- [ ] 通过插件发布首个 Commit，并验证分支 SHA、父提交及实际内容。
-- [ ] ChatGPT 从 GitHub 读取精确 `REVIEW_SHA`，完成内容校验并提出实际修改建议。
-- [ ] Codex 核实建议、修复、重测并发布第二个 Commit，重新验证远端结果。
+- [ ] 首轮测试发布包含一个预先记录、无安全影响、可客观验证的小缺陷（如验收要求的标题遗漏或错误文档链接），仅限授权测试仓库；记录不放入 Reviewer 可读取的提交或 Review 请求中，不透露具体答案。
+- [ ] 通过插件发布首轮一个或一组连续 Commit，逐次验证分支 SHA、父提交及内容，全部完成后记录 `REVIEW_SHA`。
+- [ ] ChatGPT 实际读取精确 `REVIEW_SHA` 和累计范围，提供变更路径及实现事实，独立完成评审。
+- [ ] 如果发现预置问题，Codex 核实、修复、重测并发布第二轮 Commit，验证最终 `REVIEW_SHA_2`。
 - [ ] ChatGPT 读取并评审累计 `BASE_SHA..REVIEW_SHA_2`，完成修复闭环。
-- [ ] 在同次测试中覆盖多文件提交及文件删除，验证其他文件保持不变。
+- [ ] 在测试中覆盖多个文件变更和文件删除，记录使用单 Commit 或逐文件连续 Commit 的实际路径，验证其他文件保持不变；不要求插件同时支持两种方式。
+
+若 ChatGPT 未发现预置问题，本轮 Review 发现能力及修复闭环不记为通过，不要求它虚构其他问题。若没有预置缺陷，“未发现问题”是合法结果，但该场景不能证明 Review 修复闭环。读取能力、发现能力和修复闭环分别记录结果。
 
 记录日期、桌面系统/产品形态、连接器及实际写动作、仓库/分支、完整 SHA、检查命令与结果、ChatGPT 对话证据和读取限制。发布结果不明、分支未更新或指定 Commit 不可读都不能记为通过。
 
