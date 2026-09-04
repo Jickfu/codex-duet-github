@@ -1,0 +1,5 @@
+interface:
+  display_name: "codex-duet-github"
+  short_description: "显式选择 ChatGPT 规划、讨论或评审，由 Codex 实施并通过 GitHub 插件发布"
+policy:
+  allow_implicit_invocation: false
