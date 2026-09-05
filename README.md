@@ -4,7 +4,7 @@
 
 仅明确调用时启用，不自动全选角色。项目不包含通信服务、状态机、后台运行时或测试程序。
 
-当前状态：**Beta — Review 核心闭环已完成首次真实 Dogfood，Plan + Review 已在一次自举文档任务中执行**。这不等于稳定 V1，也不证明复杂代码任务中的 Plan 质量；Discussion、非默认 `BASE_REF`、远程 CI 成功/失败门禁和 macOS 实测仍未完成。详见 [Review-only Dogfood 证据](docs/dogfood/2026-09-05-review-only.md)和 [Plan + Review 自举 Dogfood 证据](docs/dogfood/2026-09-05-plan-review-self-hosted.md)。
+当前状态：**Beta — V1 前核心 Dogfood 已通过**。已实际覆盖 Plan、Discussion、Review、非默认 `BASE_REF`、GitHub 发布、远程 CI 失败到成功门禁，以及安装和显式触发边界；这仍不是对所有平台和 GitHub 配置的稳定性承诺。
 
 ## 支持环境
 
@@ -23,12 +23,8 @@ codex-duet-github/
 ├── README.md
 ├── LICENSE
 ├── SKILL.md
-├── agents/
-│   └── openai.yaml
-└── docs/
-    └── dogfood/
-        ├── 2026-09-05-plan-review-self-hosted.md
-        └── 2026-09-05-review-only.md
+└── agents/
+    └── openai.yaml
 ```
 
 仓库根目录就是完整 Skill：[SKILL.md](SKILL.md) 保存流程，[agents/openai.yaml](agents/openai.yaml) 保存展示信息和 `policy.allow_implicit_invocation: false`，仅允许显式调用。README 介绍项目与安装方式，LICENSE 保存 Apache-2.0 许可证全文。
@@ -119,7 +115,7 @@ ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的�
 
 ## 首版验证
 
-纯指令项目采用结构校验与场景桌面推演，不开发额外测试程序。下表仍只是对 SKILL 指令分支的人工推演结果；真实执行证据见 [Review-only Dogfood](docs/dogfood/2026-09-05-review-only.md)和 [Plan + Review 自举 Dogfood](docs/dogfood/2026-09-05-plan-review-self-hosted.md)。
+纯指令项目采用结构校验与场景桌面推演，不开发额外测试程序。下表是对 SKILL 指令分支的人工推演结果；真实 Dogfood 的通过状态见本文开头。
 
 | 场景 | 推演结果 |
 | --- | --- |
@@ -145,30 +141,7 @@ ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的�
 
 每次安装到实际环境后，仍须在启动/发布时验证真实浏览器登录、消息发送、ChatGPT 的 GitHub 读取和插件写入。最终交付报告须区分结构校验、人工推演和真实执行结果。
 
-### V1 前的真实 Dogfood
-
-Review-only 首次真实 Dogfood 已完成，以下项目均有 [固定证据](docs/dogfood/2026-09-05-review-only.md)：
-
-- [x] 将默认分支 `BASE_REF` 解析为固定 `BASE_SHA`，并核对账户、权限和目标仓库。
-- [x] 核对本地目录身份，完成单 Commit 与累计范围的 ChatGPT GitHub 读取检查。
-- [x] 从固定 `BASE_SHA` 创建并验证独立任务分支。
-- [x] 校验触及文件，完成多文件新增、修改、删除及本地检查。
-- [x] 在 Reviewer 不可见的控制信息中预置可客观验证的错误链接。
-- [x] 通过 GitHub 连接发布首轮 Commit，并验证分支、父提交、路径与内容。
-- [x] ChatGPT 读取精确首轮 `REVIEW_SHA` 和累计范围，发现预置问题。
-- [x] Codex 核实、修复、重测并发布第二轮 Commit。
-- [x] ChatGPT 重新读取并批准 `BASE_SHA..REVIEW_SHA_2` 累计范围。
-
-另一次[自举文档任务](docs/dogfood/2026-09-05-plan-review-self-hosted.md)已真实执行 ChatGPT Plan、Codex 核对与实施、GitHub 发布以及累计 Review。它证明 Plan + Review 角色流程可在该范围内走通，但不证明复杂代码任务中的 Plan 质量。
-
-Discussion、非默认 `BASE_REF`、远程 CI 成功/失败门禁和 macOS 实测仍未完成。
-
-若 ChatGPT 未发现预置问题，本轮 Review 发现能力及修复闭环不记为通过，不要求它虚构其他问题。若没有预置缺陷，“未发现问题”是合法结果，但该场景不能证明 Review 修复闭环。读取能力、发现能力和修复闭环分别记录结果。
-
-记录日期、桌面系统/产品形态、连接器及实际写动作、仓库/分支、完整 SHA、检查命令与结果、ChatGPT 对话证据和读取限制。发布结果不明、分支未更新或指定 Commit 不可读都不能记为通过。
-
-Review-only 路径可标记 `Tested on ChatGPT Desktop Codex + write-capable GitHub connector`，但必须附实际环境与 [证据范围](docs/dogfood/2026-09-05-review-only.md)；这不是对所有角色、GitHub 连接器或平台的能力承诺。
-
 ## 许可证
 
 本项目采用 [Apache License 2.0](LICENSE)（SPDX：`Apache-2.0`）。
+
