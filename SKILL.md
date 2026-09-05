@@ -8,7 +8,7 @@ description: 仅在用户明确调用 codex-duet-github 时，组织 Codex 实�
 
 Codex 是唯一 Executor / Implementer / Tester：读取本地完整项目，形成独立判断，实施并验证。ChatGPT 通过 GitHub 读取真实仓库与真实 Commit，只承担用户选择的协作角色，不修改本地文件，不替代 Codex 执行测试。
 
-这是 Alpha / workflow specification，尚未完成真实 GitHub 写入与浏览器评审闭环验证。面向 Windows/macOS 的 ChatGPT 桌面应用中的 Codex，要求本地项目访问、ChatGPT 内置 Browser 或已连接的 ChatGPT 浏览器扩展，以及可写 GitHub 工具连接；CLI、IDE 扩展和没有浏览器通道的环境不在完整支持范围内。不要为它增加运行时。若本 Skill 导致暂停，指出具体条款、实际失败项和用户需要完成的动作。
+当前为 Beta；Review 核心闭环已完成首次真实 Dogfood，但尚不属于稳定 V1。验证范围与证据见 [2026-09-05 Review-only Dogfood](docs/dogfood/2026-09-05-review-only.md)。面向 Windows/macOS 的 ChatGPT 桌面应用中的 Codex，要求本地项目访问、ChatGPT 内置 Browser 或已连接的 ChatGPT 浏览器扩展，以及可写 GitHub 工具连接；CLI、IDE 扩展和没有浏览器通道的环境不在完整支持范围内。不要为它增加运行时。若本 Skill 导致暂停，指出具体条款、实际失败项和用户需要完成的动作。
 
 ## 1. 明确角色与目标
 
