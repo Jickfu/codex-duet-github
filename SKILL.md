@@ -8,7 +8,7 @@ description: 仅在用户明确调用 codex-duet-github 时，组织 Codex 实�
 
 Codex 是唯一 Executor / Implementer / Tester：读取本地完整项目，形成独立判断，实施并验证。ChatGPT 通过 GitHub 读取真实仓库与真实 Commit，只承担用户选择的协作角色，不修改本地文件，不替代 Codex 执行测试。
 
-当前为 Beta；Review 核心闭环已完成首次真实 Dogfood，Plan + Review 也已在一次自举文档任务中执行，但复杂代码任务中的 Plan 质量尚未验证，且尚不属于稳定 V1。验证范围与证据见 [Review-only Dogfood](docs/dogfood/2026-09-05-review-only.md)和 [Plan + Review 自举 Dogfood](docs/dogfood/2026-09-05-plan-review-self-hosted.md)。面向 Windows/macOS 的 ChatGPT 桌面应用中的 Codex，要求本地项目访问、ChatGPT 内置 Browser 或已连接的 ChatGPT 浏览器扩展，以及可写 GitHub 工具连接；CLI、IDE 扩展和没有浏览器通道的环境不在完整支持范围内。不要为它增加运行时。若本 Skill 导致暂停，指出具体条款、实际失败项和用户需要完成的动作。
+面向 Windows/macOS 的 ChatGPT 桌面应用中的 Codex，要求本地项目访问、ChatGPT 内置 Browser 或已连接的 ChatGPT 浏览器扩展，以及可写 GitHub 工具连接；CLI、IDE 扩展和没有浏览器通道的环境不在完整支持范围内。不要为它增加运行时。若本 Skill 导致暂停，指出具体条款、实际失败项和用户需要完成的动作。
 
 ## 1. 明确角色与目标
 
@@ -194,3 +194,4 @@ Codex 用实际代码和测试核实意见，修复确认需要修改的问题�
 最终报告：项目/仓库、ChatGPT 角色、启动检查结果、`BASE_REF`、`BASE_SHA`、任务分支、最终完整 Commit SHA、主要修改、实际测试及结果、该 SHA 的远程检查名称和结果及读取限制、ChatGPT 实际参与的 Plan/Discussion/Review、未解决问题及保留的 Advisory suggestion。未完成时明确报告阻塞和已有交付，不虚构分支、SHA 或验收。
 
 最终报告任务分支和最终 Commit SHA 即可，不固定追问合并或删分支。只有用户在当前任务中已明确要求，或完成后另行要求时，才通过插件执行相应操作并验证结果；合并授权不自动包含删除分支。
+
