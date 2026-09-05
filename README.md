@@ -4,7 +4,7 @@
 
 仅明确调用时启用，不自动全选角色。项目不包含通信服务、状态机、后台运行时或测试程序。
 
-当前状态：**Beta — Review 核心闭环已完成首次真实 Dogfood**。已在固定 Skill 版本和独立测试仓库上完成真实 GitHub 写入、累计 Commit Review、缺陷修复和再次批准；该结果不等于稳定 V1。尚未完成 Plan 真实闭环、Discussion 真实闭环、非默认 `BASE_REF`、远程 CI 成功/失败门禁和 macOS 实测。详见 [2026-09-05 Review-only Dogfood 证据](docs/dogfood/2026-09-05-review-only.md)。
+当前状态：**Beta — Review 核心闭环已完成首次真实 Dogfood，Plan + Review 已在一次自举文档任务中执行**。这不等于稳定 V1，也不证明复杂代码任务中的 Plan 质量；Discussion、非默认 `BASE_REF`、远程 CI 成功/失败门禁和 macOS 实测仍未完成。详见 [Review-only Dogfood 证据](docs/dogfood/2026-09-05-review-only.md)和 [Plan + Review 自举 Dogfood 证据](docs/dogfood/2026-09-05-plan-review-self-hosted.md)。
 
 ## 支持环境
 
@@ -27,6 +27,7 @@ codex-duet-github/
 │   └── openai.yaml
 └── docs/
     └── dogfood/
+        ├── 2026-09-05-plan-review-self-hosted.md
         └── 2026-09-05-review-only.md
 ```
 
@@ -118,7 +119,7 @@ ChatGPT 环境检查使用指定 SHA、指定文件及不预先透露答案的�
 
 ## 首版验证
 
-纯指令项目采用结构校验与场景桌面推演，不开发额外测试程序。下表仍只是对 SKILL 指令分支的人工推演结果；首次真实 Review 核心闭环另见 [Dogfood 证据](docs/dogfood/2026-09-05-review-only.md)。
+纯指令项目采用结构校验与场景桌面推演，不开发额外测试程序。下表仍只是对 SKILL 指令分支的人工推演结果；真实执行证据见 [Review-only Dogfood](docs/dogfood/2026-09-05-review-only.md)和 [Plan + Review 自举 Dogfood](docs/dogfood/2026-09-05-plan-review-self-hosted.md)。
 
 | 场景 | 推演结果 |
 | --- | --- |
@@ -158,7 +159,9 @@ Review-only 首次真实 Dogfood 已完成，以下项目均有 [固定证据](d
 - [x] Codex 核实、修复、重测并发布第二轮 Commit。
 - [x] ChatGPT 重新读取并批准 `BASE_SHA..REVIEW_SHA_2` 累计范围。
 
-这次结果只覆盖 Review 核心闭环。Plan 真实闭环、Discussion 真实闭环、非默认 `BASE_REF`、远程 CI 成功/失败门禁和 macOS 实测仍未完成。
+另一次[自举文档任务](docs/dogfood/2026-09-05-plan-review-self-hosted.md)已真实执行 ChatGPT Plan、Codex 核对与实施、GitHub 发布以及累计 Review。它证明 Plan + Review 角色流程可在该范围内走通，但不证明复杂代码任务中的 Plan 质量。
+
+Discussion、非默认 `BASE_REF`、远程 CI 成功/失败门禁和 macOS 实测仍未完成。
 
 若 ChatGPT 未发现预置问题，本轮 Review 发现能力及修复闭环不记为通过，不要求它虚构其他问题。若没有预置缺陷，“未发现问题”是合法结果，但该场景不能证明 Review 修复闭环。读取能力、发现能力和修复闭环分别记录结果。
 
